@@ -14,6 +14,8 @@ AFPSAIGuard::AFPSAIGuard()
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 
+	GuardState = EAIState::Idle;
+
 	UE_LOG(LogTemp, Log, TEXT("Finished in constructor for AIGuard"));
 }
 
@@ -55,10 +57,17 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 	{
 		GM->CompleteMission(SeenPawn, false);
 	}
+
+	SetGuardState(EAIState::Alterted);
 }
 
 void AFPSAIGuard::OnPawnHeard(APawn *OtherActor, const FVector &Location, float Volume)
 {
+	if (GuardState == EAIState::Alterted)
+	{
+		return;
+	}
+
 	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10);
 
 	FVector Direction = Location - GetActorLocation();
@@ -72,9 +81,34 @@ void AFPSAIGuard::OnPawnHeard(APawn *OtherActor, const FVector &Location, float 
 	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
+
+	if (GuardState != EAIState::Alterted)
+	{
+		SetGuardState(EAIState::Suspicious);
+	}
 }
 
 void AFPSAIGuard::ResetOrientation()
 {
+	if (GuardState == EAIState::Alterted)
+	{
+		return;
+	}
+
 	SetActorRotation(OriginalRotation);
+
+	SetGuardState(EAIState::Idle);
 }
+
+void AFPSAIGuard::SetGuardState(EAIState NewState)
+{
+	if (GuardState == NewState)
+	{
+		return;
+	}
+
+	GuardState = NewState;
+
+	OnStateChanged(GuardState);
+}
+
