@@ -40,7 +40,6 @@ void AFPSAIGuard::Tick(float DeltaTime)
 
 void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 {
-	UE_LOG(LogTemp, Log, TEXT("OnPawnSeen"));
 	if (SeenPawn == nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("NULL"));
