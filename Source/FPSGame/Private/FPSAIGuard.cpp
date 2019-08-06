@@ -3,6 +3,7 @@
 
 #include "FPSAIGuard.h"
 #include "Perception/PawnSensingComponent.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
@@ -11,13 +12,23 @@ AFPSAIGuard::AFPSAIGuard()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+
+	UE_LOG(LogTemp, Log, TEXT("Finished in constructor for AIGuard"));
+}
+
+void AFPSAIGuard::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+	PawnSensingComp->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnPawnSeen);
+	PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnPawnHeard);
+	UE_LOG(LogTemp, Log, TEXT("Finished in PostInit for AIGuard"));
 }
 
 // Called when the game starts or when spawned
 void AFPSAIGuard::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -25,5 +36,26 @@ void AFPSAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
+{
+	UE_LOG(LogTemp, Log, TEXT("OnPawnSeen"));
+	if (SeenPawn == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("NULL"));
+		return;
+	}
+
+	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10);
+}
+
+void AFPSAIGuard::OnPawnHeard(APawn *OtherActor, const FVector &Location, float Volume)
+{
+
+    const FString VolumeDesc = FString::Printf(TEXT(" at volume %f"), Volume);
+    FString message = TEXT("Heard Actor ") + OtherActor->GetName() + VolumeDesc;
+
+    // TODO: game-specific logic
 }
 

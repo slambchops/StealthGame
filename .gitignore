@@ -72,3 +72,15 @@ DerivedDataCache/*
 
 *.dll
 Binaries/
+
+.kdev4/
+.vscode
+Makefile
+CMake*
+*.pri
+*.kdev4
+*.code-workspace
+*.pro
+*CodeCompletionFolders.txt
+*CodeLitePreProcessor.txt
+*.workspace
