@@ -47,15 +47,10 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 		return;
 	}
 
-	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10);
+	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10);
 }
 
 void AFPSAIGuard::OnPawnHeard(APawn *OtherActor, const FVector &Location, float Volume)
 {
-
-    const FString VolumeDesc = FString::Printf(TEXT(" at volume %f"), Volume);
-    FString message = TEXT("Heard Actor ") + OtherActor->GetName() + VolumeDesc;
-
-    // TODO: game-specific logic
+	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10);
 }
-
