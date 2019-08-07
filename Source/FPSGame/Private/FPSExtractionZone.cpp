@@ -41,9 +41,8 @@ void AFPSExtractionZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent,
 
 	if (MyPawn->bIsCarryingObjective)
 	{
-		
 		AFPSGameMode* GM = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
-		if (GM)
+		if (GM) //GM will always be null on clients, so this code is ready for server only functionality, which is good
 		{
 			GM->CompleteMission(MyPawn, true);
 		}
